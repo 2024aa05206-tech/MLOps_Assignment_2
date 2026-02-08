@@ -1,12 +1,27 @@
-torch
-torchvision
-fastapi
-uvicorn
-pillow
-mlflow
-scikit-learn
-matplotlib
-seaborn
-python-dotenv
-kaggle
+# This commented-out list is for reference. The actual requirements are listed below it.
+# torch
+# torchvision
+# fastapi
+# uvicorn
+# pillow
+# mlflow
+# scikit-learn
+# matplotlib
+# seaborn
+# python-dotenv
+# kaggle
+# pytest
+
+# Core API
+flask==3.0.0
+gunicorn==21.2.0
+
+# Image handling
+pillow==10.2.0
+numpy==1.26.4
+
+# PyTorch (CPU-only)
+torch==2.1.2+cpu
+torchvision==0.16.2+cpu
+
 pytest
