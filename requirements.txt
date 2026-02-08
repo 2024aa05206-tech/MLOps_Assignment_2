@@ -1,24 +1,13 @@
-# This commented-out list is for reference. The actual requirements are listed below it.
-# torch
-# torchvision
-# fastapi
-# uvicorn
-# pillow
-# mlflow
-# scikit-learn
-# matplotlib
-# seaborn
-# python-dotenv
-# kaggle
-# pytest
-
-flask==2.2.5
-gunicorn==21.2.0
-pillow==9.5.0
-numpy==1.24.4
-
-torch==1.13.1
-torchvision==0.14.1
-
-
+torch~=2.8.0
+Flask~=3.1.2
+torchvision~=0.23.0
+pillow~=11.3.0
+mlflow~=3.1.4
+mlflow-skinny~=3.1.4
+matplotlib~=3.9.4
+seaborn
+scikit-learn
+python-dotenv
+pathlib
+kaggle
 pytest
