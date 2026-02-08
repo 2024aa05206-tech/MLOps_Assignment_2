@@ -12,16 +12,13 @@
 # kaggle
 # pytest
 
-# Core API
-flask==3.0.0
+flask==2.2.5
 gunicorn==21.2.0
+pillow==9.5.0
+numpy==1.24.4
 
-# Image handling
-pillow==10.2.0
-numpy==1.26.4
+torch==1.13.1
+torchvision==0.14.1
 
-# PyTorch (CPU-only)
-torch==2.1.2+cpu
-torchvision==0.16.2+cpu
 
 pytest
