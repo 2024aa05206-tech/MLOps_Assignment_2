@@ -7,6 +7,9 @@ python -m venv venv
 venv\Scripts\activate
 
 ### 2. Install dependencies
+
+For Training Model uncomment in the requirement.txt and execute. Removed due to less space in github for installing all dependencies
+
 pip install -r requirements.txt
 
 ### 3. Run python files
