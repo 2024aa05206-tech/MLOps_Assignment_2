@@ -1,5 +1,5 @@
 artifact_uri: file:///C:/Users/kasimkuppam%20vinisha/repos/MLOps_Assignment_2/mlruns/914052336662709759/fc2be777d90141ada4c945db8aec4b4d/artifacts
-end_time: null
+end_time: 1770583314408
 entry_point_name: ''
 experiment_id: '914052336662709759'
 lifecycle_stage: active
@@ -9,6 +9,6 @@ source_name: ''
 source_type: 4
 source_version: ''
 start_time: 1770581300717
-status: 1
+status: 3
 tags: []
 user_id: kasimkuppam vinisha

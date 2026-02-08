@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/kasimkuppam%20vinisha/repos/MLOps_Assignment_2/mlruns/914052336662709759/models/m-1b14166fee764e0f96135ce7358e58d3/artifacts
+creation_timestamp: 1770583307928
+experiment_id: '914052336662709759'
+last_updated_timestamp: 1770583314389
+model_id: m-1b14166fee764e0f96135ce7358e58d3
+model_type: null
+name: baseline_cnn
+source_run_id: fc2be777d90141ada4c945db8aec4b4d
+status: 2
+status_message: null
