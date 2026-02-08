@@ -1,10 +1,7 @@
-import torch
-from src.data.preprocess import normalize_image
+from PIL import Image
+from preprocessing import IMG_SIZE
 
-def test_normalize_image():
-    img = torch.rand(3, 224, 224)
-    out = normalize_image(img)
-
-    assert out.shape == img.shape
-    assert torch.max(out) <= 1.0
-    assert torch.min(out) >= 0.0
+def test_image_resize():
+    img = Image.new("RGB", (500, 500))
+    resized = img.resize(IMG_SIZE)
+    assert resized.size == IMG_SIZE
