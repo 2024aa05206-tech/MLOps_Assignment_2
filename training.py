@@ -1,16 +1,30 @@
-import torch.nn as nn
 import os
-import mlflow.pytorch
+import torch
+import torch.nn as nn
 import torch.optim as optim
-import torch # Keep existing imports for context
-from torchvision import datasets, transforms # Add transforms import
-from torch.utils.data import DataLoader, random_split
-from sklearn.metrics import confusion_matrix
+import mlflow
+import mlflow.pytorch
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-PROCESSED_DIR = "data/processed" # Define PROCESSED_DIR in this cell
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader, random_split
+from sklearn.metrics import confusion_matrix
 
+
+# Configuration
+PROCESSED_DIR = "data/processed"
+BATCH_SIZE = 32
+LEARNING_RATE = 0.001
+NUM_EPOCHS = 5
+
+
+# MLflow Setup
+mlflow.set_tracking_uri("file:./mlruns")
+mlflow.set_experiment("cats_vs_dogs_baseline")
+
+
+# Data Preparation
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor()
@@ -18,21 +32,18 @@ transform = transforms.Compose([
 
 dataset = datasets.ImageFolder(PROCESSED_DIR, transform=transform)
 
-try:
-    train_size = int(0.8 * len(dataset))
-    val_size = len(dataset) - train_size
+train_size = int(0.8 * len(dataset))
+val_size = len(dataset) - train_size
 
-    train_ds, val_ds = random_split(dataset, [train_size, val_size])
+train_ds, val_ds = random_split(dataset, [train_size, val_size])
 
-    train_loader = DataLoader(train_ds, batch_size=32, shuffle=True)
-    val_loader = DataLoader(val_ds, batch_size=32, shuffle=False)
-    print("Dataset loaded and split successfully.")
-except ValueError as e:
-    print(f"Error splitting dataset: {e}. This might happen if the dataset is empty or too small.")
-    train_loader = None
-    val_loader = None
+train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE, shuffle=True)
+val_loader = DataLoader(val_ds, batch_size=BATCH_SIZE, shuffle=False)
+
+print("Dataset loaded and split successfully.")
 
 
+# Model Definition
 class BaselineCNN(nn.Module):
     def __init__(self):
         super().__init__()
@@ -53,37 +64,38 @@ class BaselineCNN(nn.Module):
         )
 
     def forward(self, x):
-        return self.fc(self.conv(x))
+        x = self.conv(x)
+        x = self.fc(x)
+        return x
 
-# Moved definitions from oylX1pe7oZtM to ensure they are defined before use
+
+# Training Setup
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = BaselineCNN().to(device);
+model = BaselineCNN().to(device)
 
 criterion = nn.BCELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
-num_epochs = 5
 
 def calculate_accuracy(outputs, labels):
     preds = (outputs >= 0.5).float()
     correct = (preds == labels).sum()
     return correct / labels.size(0)
 
-os.makedirs('models', exist_ok=True)
-torch.save(model.state_dict(), "models/baseline_cnn_initial.pt") # Renamed to avoid confusion with final model save
 
+# Training with MLflow
+with mlflow.start_run():
 
-mlflow.set_experiment("cats_vs_dogs_baseline")
-
-with mlflow.start_run(): # Moved mlflow.start_run() to encompass the training loop
-    mlflow.log_param("learning_rate", 0.001)
-    mlflow.log_param("epochs", num_epochs) # Log num_epochs correctly
-    mlflow.log_param("batch_size", 32)
+    mlflow.log_param("learning_rate", LEARNING_RATE)
+    mlflow.log_param("epochs", NUM_EPOCHS)
+    mlflow.log_param("batch_size", BATCH_SIZE)
 
     train_losses = []
     val_losses = []
 
-    for epoch in range(num_epochs):
+    for epoch in range(NUM_EPOCHS):
+
+        #Training
         model.train()
         running_loss = 0.0
         running_acc = 0.0
@@ -93,7 +105,6 @@ with mlflow.start_run(): # Moved mlflow.start_run() to encompass the training lo
             labels = labels.float().unsqueeze(1).to(device)
 
             optimizer.zero_grad()
-
             outputs = model(images)
             loss = criterion(outputs, labels)
 
@@ -106,7 +117,7 @@ with mlflow.start_run(): # Moved mlflow.start_run() to encompass the training lo
         train_loss = running_loss / len(train_loader)
         train_acc = running_acc / len(train_loader)
 
-        # ---------- Validation ----------
+        # Validation
         model.eval()
         val_loss = 0.0
         val_acc = 0.0
@@ -128,31 +139,33 @@ with mlflow.start_run(): # Moved mlflow.start_run() to encompass the training lo
         train_losses.append(train_loss)
         val_losses.append(val_loss)
 
-
         print(
-            f"Epoch [{epoch+1}/{num_epochs}] "
+            f"Epoch [{epoch+1}/{NUM_EPOCHS}] "
             f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f} | "
             f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}"
         )
 
-    # All these lines should be correctly indented inside the with mlflow.start_run(): block
-    os.makedirs("models", exist_ok=True)
-    torch.save(model.state_dict(), "models/baseline_cnn.pt") # Saving the final model
-
-    # Log final metrics after the training loop completes
+    #Log Final Metrics
     mlflow.log_metric("train_loss", train_loss)
     mlflow.log_metric("train_accuracy", train_acc)
     mlflow.log_metric("val_loss", val_loss)
     mlflow.log_metric("val_accuracy", val_acc)
 
+    # Save Model
+    os.makedirs("models", exist_ok=True)
+    torch.save(model.state_dict(), "models/baseline_cnn.pt")
 
-    mlflow.pytorch.log_model(model, "baseline_cnn")
+    # Log Model with Input Example (Removes Warning)
+    example_input = torch.randn(1, 3, 224, 224)
+    mlflow.pytorch.log_model(
+        model,
+        "baseline_cnn",
+        input_example=example_input
+    )
 
-    # Make sure 'outputs' directory exists if logging artifacts
-    os.makedirs('outputs', exist_ok=True)
 
+# Evaluation - Confusion Matrix
 model.eval()
-
 all_preds = []
 all_labels = []
 
@@ -167,9 +180,9 @@ with torch.no_grad():
         all_preds.extend(preds.cpu().numpy())
         all_labels.extend(labels.cpu().numpy())
 
-
-#Confusion matrix
 cm = confusion_matrix(all_labels, all_preds)
+
+os.makedirs("outputs", exist_ok=True)
 
 plt.figure(figsize=(5, 4))
 sns.heatmap(
@@ -183,13 +196,11 @@ sns.heatmap(
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.title("Confusion Matrix")
-
-os.makedirs("outputs", exist_ok=True)
-cm_path = "outputs/confusion_matrix.png"
-plt.savefig(cm_path)
+plt.savefig("outputs/confusion_matrix.png")
 plt.close()
-#Loss Curve
 
+
+# Loss Curve
 plt.figure(figsize=(6, 4))
 plt.plot(train_losses, label="Train Loss")
 plt.plot(val_losses, label="Validation Loss")
@@ -197,7 +208,7 @@ plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.title("Loss Curve")
 plt.legend()
-
-loss_curve_path = "outputs/loss_curve.png"
-plt.savefig(loss_curve_path)
+plt.savefig("outputs/loss_curve.png")
 plt.close()
+
+print("Training complete. Model and artifacts saved successfully.")
