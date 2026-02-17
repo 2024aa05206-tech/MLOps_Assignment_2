@@ -11,3 +11,4 @@ python-dotenv
 pathlib
 kaggle
 pytest
+dvc
