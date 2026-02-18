@@ -3,9 +3,6 @@
 
 This project implements an **end-to-end MLOps pipeline** for classifying images of **Cats and Dogs** using a **Convolutional Neural Network (CNN)**.
 
----
-
-
 ## M1 – Model Development & Experiment Tracking
 
 ### Data & Code Versioning
@@ -24,8 +21,6 @@ This project implements an **end-to-end MLOps pipeline** for classifying images 
 - MLflow logs parameters, metrics, and artifacts
 - Confusion matrix and loss curve stored as artifacts
 
----
-
 ## M2 – Model Packaging & Containerization
 
 ### Inference Service
@@ -41,8 +36,6 @@ This project implements an **end-to-end MLOps pipeline** for classifying images 
 ### Containerization
 - Dockerfile used to build inference image
 - Image tested locally via curl/Postman
-
----
 
 ## M3 – CI Pipeline
 
@@ -61,7 +54,6 @@ This project implements an **end-to-end MLOps pipeline** for classifying images 
 - Docker image pushed to Docker Hub
 - Image tag: 2024aa05206/cats-dogs-mlops:latest
 
----
 
 ## Project Structure
 
@@ -121,8 +113,6 @@ MLOPS_ASSIGNMENT_2/
 └── README.md                  # Project documentation
 
 
----
-
 ### Run Application Locally
 
 ## Setup
@@ -135,7 +125,6 @@ venv\Scripts\activate   # Windows
 
 pip install -r requirements.txt
 
----
 
 ## Run Pipeline with DVC
 
@@ -159,19 +148,16 @@ After training, the following will be generated:
 
 -   `mlruns/` (MLflow logs)
 
----
 
 ## Run Tests
 
 python -m pytest tests
 
----
 
 ## Run Application
 
 python app.py
 
----
 
 ## Docker - Instead of running application from local, pull the image from docker and run application
 
@@ -179,7 +165,6 @@ docker pull 2024aa05206/cats-dogs-mlops:latest
 
 docker run -p 5000:5000 2024aa05206/cats-dogs-mlops:latest
 
----
 
 ## Test Endpoints
 
@@ -192,7 +177,6 @@ curl http://localhost:5000/health
 ```bash
 curl -X POST http://localhost:5000/predict -F "file=@dog.jpg"
 
----
 
 ## MLflow
 
