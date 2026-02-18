@@ -1,7 +1,6 @@
 services:
   catsdogs:
-    build: .
-    image: catsdogs:latest
+    image: ravi202612/cats-dogs-mlops:latest
     ports:
       - "8000:8000"
     restart: always
