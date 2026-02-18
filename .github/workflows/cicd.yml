@@ -56,13 +56,28 @@ jobs:
       run: |
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/cats-dogs-mlops:latest .
 
-    - name: Smoke test (run container and hit /docs)
+    - name: Smoke test (run container and hit /health)
       run: |
         docker run -d --name catsdogs_smoke -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/cats-dogs-mlops:latest
-        sleep 10
-        curl -f http://localhost:8000/docs > /dev/null
-        docker logs catsdogs_smoke --tail 50
-        docker rm -f catsdogs_smoke
+
+    # wait until service is up (retry up to ~60s)
+     for i in {1..30}; do
+      if curl -fsS http://localhost:8000/health > /dev/null; then
+        echo "Smoke test passed"
+        exit 0
+      fi
+      echo "waiting... ($i)"
+      sleep 2
+     done
+
+     echo "Smoke test failed - printing logs"
+     docker logs catsdogs_smoke --tail 200
+     exit 1
+
+    - name: Cleanup container
+      if: always()
+      run: |
+        docker rm -f catsdogs_smoke || true
 
     # Push Docker hookup
     - name: Push Docker image
