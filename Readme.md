@@ -111,49 +111,41 @@ MLOPS_ASSIGNMENT_2/
 
 ### Run Application Locally
 
-### Setup
+**Setup**
 
+```bash
 python -m venv venv
-
 source venv/bin/activate  # Linux/Mac
-
 venv\Scripts\activate   # Windows
-
 pip install -r requirements.txt
+```
 
-
-## Run Pipeline with DVC
-
+**Run Pipeline with DVC**
+```bash
 dvc repro
-
+```
 This will execute:
 
 1.  Download Dataset
-
 2.  Preprocess Data
-
 3.  Train the Model
 
 After training, the following will be generated:
 
 -   `models/baseline_cnn.pt`
-
 -   `outputs/confusion_matrix.png`
-
 -   `outputs/loss_curve.png`
-
 -   `mlruns/` (MLflow logs)
 
-
-## Run Tests
-
+**Run Tests**
+```bash
 python -m pytest tests
+```
 
-
-## Run Application
-
+**Run Application**
+```bash
 python app.py
-
+```
 
 ## Docker - Instead of running application from local, pull the image from docker and run application
 
@@ -172,10 +164,12 @@ curl http://localhost:5000/health
 **Prediction**
 ```bash
 curl -X POST http://localhost:5000/predict -F "file=@dog.jpg"
+```
 
 
 ## MLflow
 
-mlflow ui
-
+**mlflow ui**
+```bash
 Open http://localhost:5000
+```
