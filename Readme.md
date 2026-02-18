@@ -57,58 +57,61 @@ This project implements an **end-to-end MLOps pipeline** for classifying images 
 
 ## Project Structure
 
+```bash
 MLOPS_ASSIGNMENT_2/
 │
-├── .dvc/                     # DVC internal metadata
+├── .dvc/                     
 ├── .github/
 │   └── workflows/
-│       └── cicd.yml          # CI/CD pipeline (tests + Docker build + push)
+│       └── cicd.yml
 │
 ├── data/
-│   ├── raw/                  # Raw dataset (tracked via DVC)
-│   └── processed/            # Preprocessed dataset (tracked via DVC)
+│   ├── raw/
+│   └── processed/
 │
 ├── models/
-│   └── baseline_cnn.pt       # Trained CNN model
+│   └── baseline_cnn.pt
 │
 ├── outputs/
-│   ├── confusion_matrix.png  # Evaluation confusion matrix
-│   └── loss_curve.png        # Training loss curve
+│   ├── confusion_matrix.png
+│   └── loss_curve.png
 │
-├── artifacts/                # Optional saved artifacts
-├── mlruns/                   # MLflow tracking directory
+├── artifacts/
+├── mlruns/
 │
 ├── src/
 │   ├── data/
-│   │   └── preprocessing.py  # Data preprocessing logic
+│   │   └── preprocessing.py
 │   │
 │   └── models/
-│       ├── model_file.py     # CNN architecture
-│       ├── training.py       # Model training script
-│       ├── training_utils.py # Helper utilities
-│       └── kaggle_file.py    # Dataset download script
+│       ├── model_file.py
+│       ├── training.py
+│       ├── training_utils.py
+│       └── kaggle_file.py
 │
 ├── tests/
 │   ├── test_model.py
 │   ├── test_preprocess.py
 │   └── test_training_utils.py
 │
-├── app.py                    # Flask inference app
-├── Dockerfile                # Docker image definition
-├── requirements.txt          # Python dependencies
-├── dvc.yaml                  # DVC pipeline stages
-├── dvc.lock                  # Locked DVC stage versions
-├── mlflow.db                 # MLflow backend store
+├── app.py
+├── Dockerfile
+├── requirements.txt
+├── dvc.yaml
+├── dvc.lock
+├── mlflow.db
 │
 ├── .dockerignore
 ├── .dvcignore
-├── .env                      # Environment variables (not committed)
+├── .env
 ├── .gitignore
 └── README.md
+```
+
 
 ### Run Application Locally
 
-## Setup
+### Setup
 
 python -m venv venv
 
