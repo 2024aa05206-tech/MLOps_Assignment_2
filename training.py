@@ -6,6 +6,7 @@ import mlflow
 import mlflow.pytorch
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, random_split
@@ -41,7 +42,6 @@ train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE, shuffle=True)
 val_loader = DataLoader(val_ds, batch_size=BATCH_SIZE, shuffle=False)
 
 print("Dataset loaded and split successfully.")
-
 
 # Model Definition
 class BaselineCNN(nn.Module):
@@ -81,7 +81,6 @@ def calculate_accuracy(outputs, labels):
     preds = (outputs >= 0.5).float()
     correct = (preds == labels).sum()
     return correct / labels.size(0)
-
 
 # Training with MLflow
 with mlflow.start_run():
@@ -151,12 +150,12 @@ with mlflow.start_run():
     mlflow.log_metric("val_loss", val_loss)
     mlflow.log_metric("val_accuracy", val_acc)
 
-    # Save Model
+    #Save Model
     os.makedirs("models", exist_ok=True)
     torch.save(model.state_dict(), "models/baseline_cnn.pt")
 
-    # Log Model with Input Example (Removes Warning)
-    example_input = torch.randn(1, 3, 224, 224)
+    example_input = torch.randn(1, 3, 224, 224).cpu().numpy()
+
     mlflow.pytorch.log_model(
         model,
         "baseline_cnn",
@@ -177,8 +176,8 @@ with torch.no_grad():
         outputs = model(images)
         preds = (outputs >= 0.5).float()
 
-        all_preds.extend(preds.cpu().numpy())
-        all_labels.extend(labels.cpu().numpy())
+        all_preds.extend(preds.cpu().numpy().flatten())
+        all_labels.extend(labels.cpu().numpy().flatten())
 
 cm = confusion_matrix(all_labels, all_preds)
 
