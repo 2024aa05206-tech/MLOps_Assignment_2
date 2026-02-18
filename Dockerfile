@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy code and model
 COPY app.py .
-COPY src/models/model_file.py .
+COPY src ./src
 COPY models ./models
 
 # Expose Flask port
