@@ -60,19 +60,19 @@ jobs:
       run: |
         docker run -d --name catsdogs_smoke -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/cats-dogs-mlops:latest
 
-    # wait until service is up (retry up to ~60s)
-     for i in {1..30}; do
-      if curl -fsS http://localhost:8000/health > /dev/null; then
+        # wait until service is up (retry up to ~60s)
+        for i in {1..30}; do
+        if curl -fsS http://localhost:8000/health > /dev/null; then
         echo "Smoke test passed"
         exit 0
-      fi
-      echo "waiting... ($i)"
-      sleep 2
-     done
+        fi
+        echo "waiting... ($i)"
+        sleep 2
+        done
 
-     echo "Smoke test failed - printing logs"
-     docker logs catsdogs_smoke --tail 200
-     exit 1
+        echo "Smoke test failed - printing logs"
+        docker logs catsdogs_smoke --tail 200
+        exit 1
 
     - name: Cleanup container
       if: always()
