@@ -200,3 +200,29 @@ https://hub.docker.com/r/ravi202612/cats-dogs-mlops
 
 Tag: latest
 Visibility: Public
+
+## M5 – Monitoring, Logs & Final Submission
+
+### Basic Monitoring & Logging
+
+**Integrated into Flask inference service (`app.py`):**
+
+- **Request/Response Logging**: `@before_request`/`@after_request` hooks automatically log every API call (excluding image data)
+- **In-Memory/ In-app Metrics**: Global counters track `request_count` and `total_latency_ms`.
+- **Metrics Endpoint**: `GET /metrics` exposes live stats
+
+**Test**:
+```bash
+curl http://localhost:5000/metrics
+```
+### Model Performance Tracking (Post-Deployment)
+- Evaluation script: post_deploy_eval.py
+- Reads labeled test images from data/eval_data.csv
+- Calls deployed /predict endpoint with real images
+- Computes accuracy on known true labels
+- Results saved to outputs/post_deploy_metrics.txt
+
+**Run post-deployment:**
+```bash
+python post_deploy_eval.py
+```
