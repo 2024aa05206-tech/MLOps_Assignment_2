@@ -147,12 +147,14 @@ python -m pytest tests
 python app.py
 ```
 
-## Docker - Instead of running application from local, pull the image from docker and run application
+## Docker Pull
 
+Instead of running application from local, pull the image from docker and run application
+
+```bash
 docker pull 2024aa05206/cats-dogs-mlops:latest
-
 docker run -p 5000:5000 2024aa05206/cats-dogs-mlops:latest
-
+```
 
 ## Test Endpoints
 
