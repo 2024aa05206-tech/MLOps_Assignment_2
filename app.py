@@ -1,4 +1,6 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
+import time  
+import logging 
 import torch
 from torchvision import transforms
 from PIL import Image
@@ -6,6 +8,49 @@ import io
 from model_file import BaselineCNN
 
 app = Flask(__name__)
+
+# ---- basic logging config (console) ----
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger("inference_service")
+
+# ---- simple in-memory metrics ----
+request_count = 0
+total_latency_ms = 0.0
+
+
+# ------------ M5: monitoring hooks -------------
+@app.before_request
+def start_timer():
+    """Store request start time per request."""
+    g.start_time = time.time()
+
+
+@app.after_request
+def log_request(response):
+    """
+    After each request, compute latency, update counters,
+    and log method, path, status, and latency.
+    """
+    global request_count, total_latency_ms
+
+    if hasattr(g, "start_time"):
+        latency_ms = (time.time() - g.start_time) * 1000
+    else:
+        latency_ms = 0.0
+
+    request_count += 1
+    total_latency_ms += latency_ms
+
+    logger.info(
+        f"method={request.method} path={request.path} "
+        f"status={response.status_code} latency_ms={latency_ms:.2f}"
+    )
+
+    return response
+# --------- end M5 monitoring hooks ------------
 
 # Load model once at startup
 model = BaselineCNN()
@@ -23,6 +68,16 @@ transform = transforms.Compose([
 @app.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "ok"}), 200
+
+# --- M5: metrics endpoint ---
+@app.route("/metrics", methods=["GET"])
+def metrics():
+    avg_latency = total_latency_ms / request_count if request_count > 0 else 0.0
+    return jsonify({
+        "request_count": request_count,
+        "avg_latency_ms": avg_latency
+    }), 200
+# -------- end metrics endpoint ---------
 
 
 # --- Prediction endpoint ---
