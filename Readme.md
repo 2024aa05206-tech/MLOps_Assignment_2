@@ -60,58 +60,51 @@ This project implements an **end-to-end MLOps pipeline** for classifying images 
 MLOPS_ASSIGNMENT_2/
 │
 ├── .dvc/                     # DVC internal metadata
-│
 ├── .github/
 │   └── workflows/
-│       └── cicd.yml           # CI/CD pipeline (tests + Docker build + push)
-│
-├── __pycache__/               # Python cache files
-├── .pytest_cache/             # Pytest cache
-│
-├── artifacts/                 # Additional saved artifacts (optional)
+│       └── cicd.yml          # CI/CD pipeline (tests + Docker build + push)
 │
 ├── data/
-│   ├── raw/                   # Raw dataset (tracked via DVC)
-│   └── processed/             # Preprocessed data (tracked via DVC)
-│
-├── mlruns/                    # MLflow experiment tracking directory
+│   ├── raw/                  # Raw dataset (tracked via DVC)
+│   └── processed/            # Preprocessed dataset (tracked via DVC)
 │
 ├── models/
-│   └── baseline_cnn.pt        # Trained baseline CNN model
+│   └── baseline_cnn.pt       # Trained CNN model
 │
 ├── outputs/
-│   ├── confusion_matrix.png   # Evaluation confusion matrix
-│   └── loss_curve.png         # Training loss curve
+│   ├── confusion_matrix.png  # Evaluation confusion matrix
+│   └── loss_curve.png        # Training loss curve
+│
+├── artifacts/                # Optional saved artifacts
+├── mlruns/                   # MLflow tracking directory
 │
 ├── src/
 │   ├── data/
-│   │   └── preprocessing.py   # Data preprocessing logic
+│   │   └── preprocessing.py  # Data preprocessing logic
 │   │
 │   └── models/
-│       ├── kaggle_file.py     # Dataset download from Kaggle
-│       ├── model_file.py      # CNN model architecture
-│       ├── training.py        # Model training script
-│       └── training_utils.py  # Helper utilities for training/inference
+│       ├── model_file.py     # CNN architecture
+│       ├── training.py       # Model training script
+│       ├── training_utils.py # Helper utilities
+│       └── kaggle_file.py    # Dataset download script
 │
 ├── tests/
-│   ├── test_model.py          # Unit tests for model & inference
-│   ├── test_preprocess.py     # Unit tests for preprocessing
-│   └── test_training_utils.py # Unit tests for training utilities
+│   ├── test_model.py
+│   ├── test_preprocess.py
+│   └── test_training_utils.py
 │
-├── venv/                      # Python virtual environment (not committed)
+├── app.py                    # Flask inference app
+├── Dockerfile                # Docker image definition
+├── requirements.txt          # Python dependencies
+├── dvc.yaml                  # DVC pipeline stages
+├── dvc.lock                  # Locked DVC stage versions
+├── mlflow.db                 # MLflow backend store
 │
-├── .dockerignore              # Docker ignore rules
-├── .dvcignore                 # DVC ignore rules
-├── .env                       # Environment variables (not committed)
-│
-├── app.py                     # Flask inference application
-├── Dockerfile                 # Docker image definition
-├── dvc.yaml                   # DVC pipeline stages
-├── dvc.lock                   # Locked versions of DVC stages
-├── mlflow.db                  # MLflow backend store (SQLite)
-├── requirements.txt           # Python dependencies
-└── README.md                  # Project documentation
-
+├── .dockerignore
+├── .dvcignore
+├── .env                      # Environment variables (not committed)
+├── .gitignore
+└── README.md
 
 ### Run Application Locally
 
