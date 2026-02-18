@@ -1,22 +1,28 @@
 stages:
-  preprocess:
-    cmd: python src/data/preprocess.py
+  download:
+    cmd: python src/models/kaggle_file.py
     deps:
-      - src/data/preprocess.py
+      - src/models/kaggle_file.py
+      - .env
+    outs:
+      - data/raw
+
+  preprocess:
+    cmd: python src/data/preprocessing.py
+    deps:
+      - src/data/preprocessing.py
       - data/raw
     outs:
       - data/processed
 
   train:
-    cmd: python src/models/train.py
+    cmd: python src/models/training.py
     deps:
-      - src/models/train.py
+      - src/models/training.py
+      - src/models/model_file.py
       - data/processed
     outs:
       - models/baseline_cnn.pt
-
-  evaluate:
-    cmd: python src/models/evaluate.py
-    deps:
-      - src/models/evaluate.py
-      - models/baseline_cnn.pt
+      - outputs/confusion_matrix.png
+      - outputs/loss_curve.png
+      - mlruns

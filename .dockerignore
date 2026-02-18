@@ -1,0 +1,20 @@
+# Ignore datasets and outputs
+data/
+outputs/
+
+# Ignore Python cache and logs
+__pycache__/
+*.pyc
+*.pyo
+*.log
+
+# Ignore notebooks if not needed
+*.ipynb
+
+# Ignore virtual environments
+venv/
+.env/
+
+# Ignore large model checkpoints except the one you need
+*.pt
+!models/baseline_cnn.pt   # keep only the trained model

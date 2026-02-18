@@ -1,37 +1,201 @@
-# Cats vs Dogs – MLOps Pipeline
 
-## How to Run (VS Code)
+# Cats vs Dogs Classification – MLOps Assignment 2 (Group 77)
 
-### 1. Create virtual env
+This project implements an **end-to-end MLOps pipeline** for classifying images of **Cats and Dogs** using a **Convolutional Neural Network (CNN)**.
+
+---
+
+
+## M1 – Model Development & Experiment Tracking
+
+### Data & Code Versioning
+- Git is used for source code versioning.
+- DVC is used for dataset, processed data, and model versioning.
+  - Raw dataset (data/raw)
+  - Processed dataset (data/processed)
+
+### Model Building
+- Baseline CNN implemented using PyTorch
+- Images resized to 224×224 RGB
+- Model artifact saved as:
+  - models/baseline_cnn.pt
+
+### Experiment Tracking
+- MLflow logs parameters, metrics, and artifacts
+- Confusion matrix and loss curve stored as artifacts
+
+---
+
+## M2 – Model Packaging & Containerization
+
+### Inference Service
+- Flask-based REST API
+- Endpoints:
+  - GET /health
+  - POST /predict
+
+### Environment Specification
+- Dependencies defined in requirements.txt
+- Version pinning for reproducibility
+
+### Containerization
+- Dockerfile used to build inference image
+- Image tested locally via curl/Postman
+
+---
+
+## M3 – CI Pipeline
+
+### Automated Testing
+- PyTest-based unit tests
+- Covers preprocessing and model inference utilities
+
+### CI Setup
+- Implemented using GitHub Actions
+- Runs tests and builds Docker image on each push
+
+### Artifact Publishing
+- Docker credentials are stored using GitHub Secrets:
+    - DOCKERHUB_USERNAME
+    - DOCKERHUB_TOKEN
+- Docker image pushed to Docker Hub
+- Image tag: 2024aa05206/cats-dogs-mlops:latest
+
+---
+
+## Project Structure
+
+MLOPS_ASSIGNMENT_2/
+│
+├── .dvc/                     # DVC internal metadata
+│
+├── .github/
+│   └── workflows/
+│       └── cicd.yml           # CI/CD pipeline (tests + Docker build + push)
+│
+├── __pycache__/               # Python cache files
+├── .pytest_cache/             # Pytest cache
+│
+├── artifacts/                 # Additional saved artifacts (optional)
+│
+├── data/
+│   ├── raw/                   # Raw dataset (tracked via DVC)
+│   └── processed/             # Preprocessed data (tracked via DVC)
+│
+├── mlruns/                    # MLflow experiment tracking directory
+│
+├── models/
+│   └── baseline_cnn.pt        # Trained baseline CNN model
+│
+├── outputs/
+│   ├── confusion_matrix.png   # Evaluation confusion matrix
+│   └── loss_curve.png         # Training loss curve
+│
+├── src/
+│   ├── data/
+│   │   └── preprocessing.py   # Data preprocessing logic
+│   │
+│   └── models/
+│       ├── kaggle_file.py     # Dataset download from Kaggle
+│       ├── model_file.py      # CNN model architecture
+│       ├── training.py        # Model training script
+│       └── training_utils.py  # Helper utilities for training/inference
+│
+├── tests/
+│   ├── test_model.py          # Unit tests for model & inference
+│   ├── test_preprocess.py     # Unit tests for preprocessing
+│   └── test_training_utils.py # Unit tests for training utilities
+│
+├── venv/                      # Python virtual environment (not committed)
+│
+├── .dockerignore              # Docker ignore rules
+├── .dvcignore                 # DVC ignore rules
+├── .env                       # Environment variables (not committed)
+│
+├── app.py                     # Flask inference application
+├── Dockerfile                 # Docker image definition
+├── dvc.yaml                   # DVC pipeline stages
+├── dvc.lock                   # Locked versions of DVC stages
+├── mlflow.db                  # MLflow backend store (SQLite)
+├── requirements.txt           # Python dependencies
+└── README.md                  # Project documentation
+
+
+---
+
+### Run Application Locally
+
+## Setup
+
 python -m venv venv
 
-venv\Scripts\activate
+source venv/bin/activate  # Linux/Mac
 
-### 2. Install dependencies
-
-For Training Model uncomment in the requirement.txt and execute. Removed due to less space in github for installing all dependencies
+venv\Scripts\activate   # Windows
 
 pip install -r requirements.txt
 
-### 3. Run python files
-python kaggle_file.py
+---
 
-python preprocessing.py
+## Run Pipeline with DVC
 
-python training.py
+dvc repro
 
-### 4. Run tests
+This will execute:
+
+1.  Download Dataset
+
+2.  Preprocess Data
+
+3.  Train the Model
+
+After training, the following will be generated:
+
+-   `models/baseline_cnn.pt`
+
+-   `outputs/confusion_matrix.png`
+
+-   `outputs/loss_curve.png`
+
+-   `mlruns/` (MLflow logs)
+
+---
+
+## Run Tests
+
 python -m pytest tests
 
-### 4. Run app.py
+---
+
+## Run Application
+
 python app.py
 
-### 5. Docker
-docker build -t cats-dogs-flask .
+---
 
-docker run -p 5000:5000 cats-dogs-flask
+## Docker - Instead of running application from local, pull the image from docker and run application
 
-### 6. Test url
-Health check : curl http://localhost:5000/health
+docker pull 2024aa05206/cats-dogs-mlops:latest
 
-Predict : curl -X POST http://localhost:5000/predict -F "file=@<filename with full location>"
+docker run -p 5000:5000 2024aa05206/cats-dogs-mlops:latest
+
+---
+
+## Test Endpoints
+
+**Health Check**
+```bash
+curl http://localhost:5000/health
+```
+
+**Prediction**
+```bash
+curl -X POST http://localhost:5000/predict -F "file=@dog.jpg"
+
+---
+
+## MLflow
+
+mlflow ui
+
+Open http://localhost:5000

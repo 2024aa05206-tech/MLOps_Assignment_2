@@ -1,0 +1,71 @@
+schema: '2.0'
+stages:
+  download:
+    cmd: python src/models/kaggle_file.py
+    deps:
+    - path: .env
+      hash: md5
+      md5: 803a209d0070a671da30445590bbc3d2
+      size: 82
+    - path: src/models/kaggle_file.py
+      hash: md5
+      md5: 7ea1ce648852a6fa1c749b9d9d50e76b
+      size: 1545
+    outs:
+    - path: data/raw
+      hash: md5
+      md5: 8467ce11580412ec0b77ca194007550a.dir
+      size: 848866410
+      nfiles: 24998
+  preprocess:
+    cmd: python src/data/preprocessing.py
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: 8467ce11580412ec0b77ca194007550a.dir
+      size: 848866410
+      nfiles: 24998
+    - path: src/data/preprocessing.py
+      hash: md5
+      md5: ad9c67562d5d6e98d9b956e798ae8f4a
+      size: 770
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: 6c8f6c2612d711d492000610e96e1c2f.dir
+      size: 235030526
+      nfiles: 24998
+  train:
+    cmd: python src/models/training.py
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: 6c8f6c2612d711d492000610e96e1c2f.dir
+      size: 235030526
+      nfiles: 24998
+    - path: src/models/model_file.py
+      hash: md5
+      md5: 8735e3fb14b8bf4be05af56c5e3719cf
+      size: 594
+    - path: src/models/training.py
+      hash: md5
+      md5: c30cedd4035e7643f49500bb4494d62b
+      size: 6262
+    outs:
+    - path: mlruns
+      hash: md5
+      md5: 7d0880c344b54931d6b5d8ebf787b209.dir
+      size: 55693002
+      nfiles: 36
+    - path: models/baseline_cnn.pt
+      hash: md5
+      md5: 03ab0d096e9c697c64b962a195ad1c31
+      size: 47800915
+    - path: outputs/confusion_matrix.png
+      hash: md5
+      md5: f57ebf6bccc6886f685a6e989e2f9efb
+      size: 18399
+    - path: outputs/loss_curve.png
+      hash: md5
+      md5: a3aa77c02d59b8d102ce272d878114f3
+      size: 24230
