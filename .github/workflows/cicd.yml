@@ -56,6 +56,14 @@ jobs:
       run: |
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/cats-dogs-mlops:latest .
 
+    - name: Smoke test (run container and hit /docs)
+      run: |
+        docker run -d --name catsdogs_smoke -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/cats-dogs-mlops:latest
+        sleep 10
+        curl -f http://localhost:8000/docs > /dev/null
+        docker logs catsdogs_smoke --tail 50
+        docker rm -f catsdogs_smoke
+
     # Push Docker hookup
     - name: Push Docker image
       run: |
