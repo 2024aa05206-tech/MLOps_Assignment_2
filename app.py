@@ -5,7 +5,7 @@ import torch
 from torchvision import transforms
 from PIL import Image
 import io
-from model_file import BaselineCNN
+from src.models.model_file import BaselineCNN
 
 app = Flask(__name__)
 
