@@ -175,4 +175,28 @@ curl -X POST http://localhost:5000/predict -F "file=@dog.jpg"
 ```bash
 Open http://localhost:5000
 ```
-#M4
+## M4 – CI/CD Pipeline with GitHub Actions
+
+In this milestone, we implemented a complete CI/CD pipeline using GitHub Actions.
+
+### Trigger
+The pipeline runs automatically on:
+- Push to main branch
+- Pull requests to main
+
+### Steps in Pipeline
+1. Checkout repository
+2. Setup Python 3.9
+3. Install dependencies
+4. Run unit tests using pytest
+5. Login to DockerHub using GitHub Secrets
+6. Build Docker image
+7. Push image to DockerHub
+
+### Docker Image
+The Docker image is automatically published to:
+
+https://hub.docker.com/r/ravi202612/cats-dogs-mlops
+
+Tag: latest
+Visibility: Public
