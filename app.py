@@ -67,7 +67,7 @@ transform = transforms.Compose([
 # --- Health check endpoint ---
 @app.route("/health", methods=["GET"])
 def health():
-    return jsonify({"status": "ok"}), 200
+    return jsonify({"status": "ok", "version": "v2.0"}), 200
 
 # --- M5: metrics endpoint ---
 @app.route("/metrics", methods=["GET"])
