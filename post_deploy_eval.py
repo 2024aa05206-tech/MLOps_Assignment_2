@@ -1,7 +1,7 @@
 import csv
 import requests
 
-API_URL = "http://localhost:5000/predict"   # K8s/VM URL
+API_URL = "http://localhost:8000/predict" 
 
 def get_prediction(image_path: str) -> str:
     with open(image_path, "rb") as f:

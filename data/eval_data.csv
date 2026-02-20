@@ -2,5 +2,5 @@ image_path,true_label
 data/eval/cat1.jpg,cat
 data/eval/dog1.jpg,dog
 data/eval/dog2.jpg,dog
-data/cat_image.jpg,cat
+data/eval/cat2.jpg,cat
 data/dog_image1.jpg,dog
