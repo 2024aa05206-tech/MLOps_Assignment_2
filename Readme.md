@@ -168,7 +168,6 @@ curl http://localhost:5000/health
 curl -X POST http://localhost:5000/predict -F "file=@dog.jpg"
 ```
 
-
 ## MLflow
 
 **mlflow ui**
@@ -200,6 +199,9 @@ https://hub.docker.com/r/ravi202612/cats-dogs-mlops
 
 Tag: latest
 Visibility: Public
+
+![M4 Docker Image 1](dockerImage1.jpeg)
+![M4 Docker Image 2](dockerImage2.jpeg)
 
 ## M5 – Monitoring, Logs & Final Submission
 
